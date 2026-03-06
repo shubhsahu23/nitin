@@ -2,12 +2,18 @@ const jwt = require("jsonwebtoken");
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.cookies.token;
+    const cookieToken = req.cookies?.token;
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    const headerToken =
+      typeof authHeader === "string" && authHeader.startsWith("Bearer ")
+        ? authHeader.split(" ")[1]
+        : null;
+    const token = cookieToken || headerToken;
 
     if (!token) {
       return res
         .status(401)
-        .send({ message: "No token found in cookies", success: false });
+        .send({ message: "No authentication token found", success: false });
     }
 
     jwt.verify(token, process.env.JWT_KEY, (err, decode) => {
@@ -18,6 +24,7 @@ const authMiddleware = async (req, res, next) => {
       } else {
         req.body = req.body || {};
         req.body.userId = decode.id;
+        req.userId = decode.id;
         next();
       }
     });
