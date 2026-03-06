@@ -1,4 +1,9 @@
-const configuredApiUrl = (import.meta.env.VITE_API_URL || "http://localhost:8001").replace(/\/$/, "");
+const normalizeApiUrl = (url = "") => {
+  // Guards against a common env typo: houseerent -> houserent.
+  return url.replace("houseerent-lc52.onrender.com", "houserent-lc52.onrender.com");
+};
+
+const configuredApiUrl = normalizeApiUrl(import.meta.env.VITE_API_URL || "http://localhost:8001").replace(/\/$/, "");
 const isLocalDevHost =
   typeof window !== "undefined" &&
   (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
