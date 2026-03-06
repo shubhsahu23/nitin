@@ -22,14 +22,17 @@ app.use(cors({
       'http://localhost:3000',
       'http://127.0.0.1:5173',
       'http://127.0.0.1:3000',
-      'https://house-rent-gold.vercel.app'
+      'https://house-rent-gold.vercel.app',
+      'https://nitin-tau.vercel.app'
     ];
     
     if (process.env.FRONTEND_URL) {
       allowedOrigins.push(process.env.FRONTEND_URL);
     }
     
-    if (!origin || allowedOrigins.includes(origin)) {
+    const isVercelPreview = typeof origin === 'string' && /https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+
+    if (!origin || allowedOrigins.includes(origin) || isVercelPreview) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
