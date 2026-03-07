@@ -1,265 +1,279 @@
-# RentEase - Full Stack House Rental Project
+# HomeHunt
 
-RentEase is a MERN-style house rental platform with role-based flows for renters, owners, and admins.
+# HomeHunt - Full Stack House Rental Platform
 
-- `Frontend/`: React + Vite client app
-- `Backend/`: Node.js + Express + MongoDB REST API
+A full-stack MERN house rental platform where renters can discover and book properties, owners can manage listings, and admins can control platform operations.
+
+---
 
 ## Features
 
-- User registration and login
-- Role-based navigation (`Admin`, `Owner`, `Renter`)
-- Property listing and browsing
-- Owner property management (add, update, delete)
-- Booking creation and booking status management
-- Admin dashboards for users, properties, and bookings
-- Image upload support for property media
+- Authentication: JWT-based register/login with bcrypt password hashing
+- Role-based access: Admin, Owner, and Renter flows
+- Property listings: Browse all available properties
+- Owner dashboard: Add, update, and delete property listings
+- Booking workflow: Create bookings and manage booking status
+- Admin panel: View users, properties, bookings, and handle owner approval
+- Image upload: Property image upload via multer with static serving
+- Responsive UI: Built with React + Tailwind CSS
 
-## Role Workflows
-
-- `Renter`
-  - Register or log in
-  - Browse all listed properties
-  - Place booking requests
-  - Track personal booking status
-- `Owner`
-  - Register as `Owner` (starts with `granted: ungranted`)
-  - Wait for admin approval
-  - Add/edit/delete own properties
-  - View and update booking status for owned properties
-- `Admin`
-  - View all users, properties, and bookings
-  - Approve/reject owner account status via `handlestatus`
+---
 
 ## Tech Stack
 
-### Frontend
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19, Vite 7, React Router, Axios, Tailwind CSS 4, Ant Design |
+| Backend | Node.js, Express 5, JWT, bcrypt, cookie-parser, multer |
+| Database | MongoDB (Mongoose) |
+| Auth | JWT + HTTP-only cookie / Bearer token |
+| API Client | Centralized `apiUrl()` and `assetUrl()` helpers |
+| Dev Tools | ESLint, Nodemon |
 
-- React 19
-- Vite 7
-- React Router
-- Axios
-- Tailwind CSS 4
-
-### Backend
-
-- Node.js
-- Express 5
-- MongoDB + Mongoose
-- JWT authentication
-- Cookie parser + CORS
-- Multer for file uploads
+---
 
 ## Project Structure
 
 ```text
 Nitin/
-  Backend/
-    config/
-    controllers/
-    middlewares/
-    models/
-    routes/
-    uploads/
-    index.js
-    package.json
-  Frontend/
-    src/
-      config/
-      context/
-      modules/
-    index.html
-    package.json
-    vite.config.js
+|- README.md
+|- Backend/
+|  |- index.js
+|  |- package.json
+|  |- .env
+|  |- config/
+|  |  |- connect.js
+|  |- controllers/
+|  |  |- adminController.js
+|  |  |- ownerController.js
+|  |  |- userController.js
+|  |- middlewares/
+|  |  |- authMiddleware.js
+|  |- models/
+|  |  |- BookingSchema.js
+|  |  |- PropertySchema.js
+|  |  |- UserSchema.js
+|  |- routes/
+|  |  |- adminRoutes.js
+|  |  |- ownerRoutes.js
+|  |  |- userRoutes.js
+|  |- uploads/
+|
+|- Frontend/
+   |- package.json
+   |- vite.config.js
+   |- index.html
+   |- src/
+      |- App.jsx
+      |- main.jsx
+      |- config/
+      |  |- api.js
+      |- context/
+      |  |- UserContext.jsx
+      |- modules/
+         |- admin/
+         |- common/
+         |- user/
 ```
 
-## Frontend Modules
+---
 
-- `src/modules/common/`
-  - Public pages: home, login, register, forgot password, toast UI
-- `src/modules/user/`
-  - Shared property cards and user role features
-  - `owner/`: owner dashboard, add/manage properties, bookings
-  - `renter/`: renter dashboard and property browsing
-- `src/modules/admin/`
-  - Admin dashboard, users list, properties list, bookings list
-- `src/config/api.js`
-  - Centralized API/asset URL builders: `apiUrl()` and `assetUrl()`
-- `src/context/UserContext.jsx`
-  - Application-level user state context
+## Quick Start
 
-## Prerequisites
+### Prerequisites
 
 - Node.js 18+
 - npm
-- MongoDB connection string
+- MongoDB Atlas/local MongoDB URI
 
-## Environment Variables
+---
 
-### Backend (`Backend/.env`)
+### 1. Clone and Install
+
+```bash
+git clone https://github.com/Nkj-718/HomeHunt.git
+cd HomeHunt
+
+# Install backend dependencies
+cd Backend
+npm install
+
+# Install frontend dependencies
+cd ../Frontend
+npm install
+```
+
+---
+
+### 2. Configure Environment Variables
+
+Backend (`Backend/.env`):
 
 ```env
 MONGO_DB=your_mongodb_connection_string
-JWT_KEY=your_jwt_secret
+JWT_KEY=your_jwt_secret_key
 PORT=8001
 FRONTEND_URL=http://localhost:5173
 FRONTEND_ORIGIN=http://127.0.0.1:5173
 ```
 
-- `MONGO_DB`: MongoDB URI
-- `JWT_KEY`: JWT signing key
-- `PORT`: API server port (default `8001`)
-- `FRONTEND_URL`, `FRONTEND_ORIGIN`: allowed CORS origins
-
-### Frontend (`Frontend/.env`) - optional
+Frontend (`Frontend/.env`) - optional for deployed mode:
 
 ```env
 VITE_API_URL=http://localhost:8001
 ```
 
 Notes:
-- In local development on `localhost`/`127.0.0.1`, frontend code uses relative API paths and Vite proxy.
-- For deployed builds, `VITE_API_URL` is used as API host.
+- In local development (`localhost`/`127.0.0.1`), frontend uses Vite proxy for `/api` and `/uploads`.
+- In deployed builds, frontend uses `VITE_API_URL` as backend host.
 
-## Installation
+---
 
-### 1. Install backend dependencies
+### 3. Run Development Servers
 
 ```bash
+# Terminal 1 - Backend
 cd Backend
-npm install
-```
+npm start
 
-### 2. Install frontend dependencies
-
-```bash
-cd ../Frontend
-npm install
-```
-
-## Run Locally
-
-Open two terminals.
-
-### Terminal 1: Start backend
-
-```bash
-cd Backend
-node index.js
-```
-
-Current backend `package.json` does not include `start`/`dev` scripts.
-
-### Terminal 2: Start frontend
-
-```bash
+# Terminal 2 - Frontend
 cd Frontend
 npm run dev
 ```
 
-Frontend default URL: `http://localhost:5173`
+App URL: `http://localhost:5173`
+Backend URL: `http://localhost:8001`
 
-Backend default URL: `http://localhost:8001`
+---
 
-## Frontend Routes (App)
+## API Reference
 
-- `/` - Home
-- `/login` - Login
-- `/register` - Register
-- `/forgotpassword` - Forgot Password
-- `/adminhome` - Admin dashboard
-- `/ownerhome` - Owner dashboard
-- `/renterhome` - Renter dashboard
-- `/getAllProperties` - Public property cards
+Base URL: `http://localhost:8001`
 
-## API Overview
+### User APIs (`/api/user`)
 
-Base URL (local): `http://localhost:8001`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/user/register` | Register user (Renter/Owner/Admin) |
+| POST | `/api/user/login` | Login and issue JWT token |
+| POST | `/api/user/forgotpassword` | Reset password |
+| GET | `/api/user/getAllProperties` | Get all listed properties |
+| POST | `/api/user/getuserdata` | Get current user data (auth required) |
+| POST | `/api/user/bookinghandle/:propertyid` | Create booking for property (auth required) |
+| GET | `/api/user/getallbookings` | Get renter bookings (auth required) |
 
-### User Routes (`/api/user`)
+### Admin APIs (`/api/admin`)
 
-- `POST /register`
-- `POST /login`
-- `POST /forgotpassword`
-- `GET /getAllProperties`
-- `POST /getuserdata` (auth required)
-- `POST /bookinghandle/:propertyid` (auth required)
-- `GET /getallbookings` (auth required)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/getallusers` | Get all users (auth required) |
+| POST | `/api/admin/handlestatus` | Approve/reject owner status (auth required) |
+| GET | `/api/admin/getallproperties` | Get all properties (auth required) |
+| GET | `/api/admin/getallbookings` | Get all bookings (auth required) |
 
-### Admin Routes (`/api/admin`)
+### Owner APIs (`/api/owner`)
 
-- `GET /getallusers` (auth required)
-- `POST /handlestatus` (auth required)
-- `GET /getallproperties` (auth required)
-- `GET /getallbookings` (auth required)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/owner/postproperty` | Add new property with images (auth required) |
+| GET | `/api/owner/getallproperties` | Get owner properties (auth required) |
+| GET | `/api/owner/getallbookings` | Get owner bookings (auth required) |
+| POST | `/api/owner/handlebookingstatus` | Update booking status (auth required) |
+| DELETE | `/api/owner/deleteproperty/:propertyid` | Delete owner property (auth required) |
+| PATCH | `/api/owner/updateproperty/:propertyid` | Update owner property (auth required) |
 
-### Owner Routes (`/api/owner`)
+---
 
-- `POST /postproperty` (auth + multipart images)
-- `GET /getallproperties` (auth required)
-- `GET /getallbookings` (auth required)
-- `POST /handlebookingstatus` (auth required)
-- `DELETE /deleteproperty/:propertyid` (auth required)
-- `PATCH /updateproperty/:propertyid` (auth + optional image)
+## Frontend Routes
 
-## Backend Data Models
+| Route | Description |
+|------|-------------|
+| `/` | Landing/home page |
+| `/login` | User login |
+| `/register` | User registration |
+| `/forgotpassword` | Password reset |
+| `/adminhome` | Admin dashboard |
+| `/ownerhome` | Owner dashboard |
+| `/renterhome` | Renter dashboard |
+| `/getAllProperties` | Property browsing cards |
 
-### User (`models/UserSchema.js`)
+---
 
-- `name`, `email`, `password`, `type`
-- Uses `strict: false` to allow extra fields like `granted`
+## Security Features
 
-### Property (`models/PropertySchema.js`)
+- bcrypt password hashing
+- JWT authentication with expiry
+- Auth middleware for protected endpoints
+- Cookie-based auth support (`token`) + Bearer token fallback
+- CORS allowlist based on environment variables
+- Owner approval workflow handled by admin
 
-- `ownerId`, `ownerName`
-- `propertyType`, `propertyAdType`, `propertyAddress`
-- `ownerContact`, `propertyAmt`, `additionalInfo`
-- `propertyImage` (stored upload metadata)
-- Extra runtime fields are used (for example `isAvailable`)
+---
 
-### Booking (`models/BookingSchema.js`)
+## Database Models
 
-- Links user/owner/property IDs
-- Stores renter details (`userName`, `phone`)
-- Tracks `bookingStatus`
+### User
 
-## Authentication
+```text
+name, email, password, type, granted(optional)
+```
 
-Protected API routes use `authMiddleware`.
+### Property
 
-Token can be sent by either:
-- Cookie: `token`
-- Header: `Authorization: Bearer <token>`
+```text
+ownerId, ownerName, propertyType, propertyAdType, propertyAddress,
+ownerContact, propertyAmt, propertyImage, additionalInfo, isAvailable
+```
 
-## Uploads and Static Files
+### Booking
 
-- Uploaded files are stored in `Backend/uploads`
-- Public access path: `/uploads/<filename>`
+```text
+propertyId/propertId, ownerID, userID, userName, phone, bookingStatus
+```
 
-## Development Notes
-
-- CORS is restricted to allowed origins listed in backend config/environment.
-- Frontend API helper is centralized in `Frontend/src/config/api.js`.
-- Vite proxy forwards `/api` and `/uploads` during local dev.
-- Login sets an HTTP-only `token` cookie and also returns a bearer token in response.
+---
 
 ## Available Scripts
 
-### Frontend
+### Backend (`Backend/package.json`)
+
+- `npm start` - run backend using nodemon
+- `npm test` - placeholder test script
+
+### Frontend (`Frontend/package.json`)
 
 - `npm run dev` - start Vite dev server
-- `npm run build` - production build
+- `npm run build` - create production build
 - `npm run preview` - preview production build
 - `npm run lint` - run ESLint
 
-### Backend
-
-- No custom npm scripts are currently defined
-- Start server with `node index.js`
+---
 
 ## Troubleshooting
 
-- `CORS` errors: verify `FRONTEND_URL`/`FRONTEND_ORIGIN` in backend `.env`
-- `401 Unauthorized`: check token storage and request headers/cookies
-- Mongo connection issues: verify `MONGO_DB` value and network access
-- Image not loading: confirm correct `/uploads/...` path and backend is running
+- If backend fails to start, confirm `.env` exists in `Backend/` and `MONGO_DB` is valid.
+- If frontend cannot call APIs, verify backend is running on `8001` and CORS origins match.
+- On Windows, folder names are case-sensitive in commands here; use exactly `Backend` and `Frontend`.
+- If images do not render, ensure files exist under `Backend/uploads` and backend static route is active.
+
+---
+
+## Deployment
+
+### Backend
+
+- Deploy `Backend/` to any Node hosting (Render, Railway, EC2, VPS)
+- Set environment variables from `Backend/.env`
+- Start command: `npm start`
+
+### Frontend
+
+- Deploy `Frontend/` to Vercel/Netlify
+- Set `VITE_API_URL` to your deployed backend URL
+- Build command: `npm run build`
+
+---
+
+## License
+
+MIT License - free to use for educational and personal projects.
